@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clash Royale Deck Builder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1, h2 {
+      color: #2c3e50;
+    }
+
+    select, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    #deckDisplay {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      justify-content: center;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+     
+    }
+
+    .card-box {
+      background: white;
+      color: black;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      width: 120px;
+      text-align: center;
+      font-weight: bold;
+      transition: transform 0.2s;
+    }
+
+    .card-box:hover {
+      transform: scale(1.05);
+    }
+
+    .card-box img {
+      width: 100px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🃏 Clash Royale Deck Builder</h1>
+
+  <h2>Choose Rarity and Add Cards</h2>
+  <label for="raritySelect">Rarity:</label>
+  <select id="raritySelect">
+    <option value="all">All</option>
+    <option value="common">Common</option>
+    <option value="rare">Rare</option>
+    <option value="epic">Epic</option>
+    <option value="legendary">Legendary</option>
+  </select>
+
+  <button onclick="addToDeck()">Add Random Character</button>
+  <button onclick="clearDeck()">Clear Deck</button>
+
+  <div id="deckDisplay"></div>
+
+  <script>
+    const commonCharacters = [
+      "Skeletons", "Knight", "Archers", "Bomber", "Goblins", "Spear Goblins", "Ice Spirit", "Fire Spirit",
+      "Electro Spirit", "Bats", "Minions", "Minion Horde", "Cannon", "Tesla", "Mortar", "Zap", "Arrows",
+      "Barbarians", "Royal Delivery", "Skeleton Dragons", "Royal Recruits", "Royal Giant", "Berserkers",
+      "Skeleton Barrel", "Goblin Gang", "Elite Barbarians", "Firecracker", "Rascals", "Giant Snowball"
+    ];
+
+    const rareCharacters = [
+      "Mini P.E.K.K.A", "Valkyrie", "Musketeer", "Giant", "Mega Minion", "Battle Ram", "Wizard", "Flying Machine",
+      "Hog Rider", "Royal Hogs", "Three Musketeers", "Battle Healer", "Ice Golem", "Dart Goblin", "Furnace",
+      "Zappies", "Goblin Demolisher", "Heal Spirit", "Suspicious Bush", "Elixir Golem", "Fireball", "Rocket",
+      "Earthquake", "Goblin Cage", "Goblin Hut", "Tombstone", "Bomb Tower", "Inferno Tower", "Barbarian Hut",
+      "Elixir Collector"
+    ];
+
+    const epicCharacters = [
+      "Baby Dragon", "Prince", "Dark Prince", "Witch", "Golem", "Bowler", "Skeleton Army",
+      "Tornado", "Poison", "Goblin Giant", "Electro Dragon", "Executioner",
+      "Cannon Cart", "Flying Machine", "Guards", "P.E.K.K.A", "Balloon", "Giant Skeleton", "Rune Giant",
+      "Hunter", "Wall Breakers", "Electro Giant", "Goblin Barrel", "Vines", "Lightning", "Freeze", "Barbarian Barrel", "Goblin Curse", "Rage", 
+      "Clone", "Mirror", "Void", "x-Bow", "Goblin Drill", 
+    ];
+
+    const legendaryCharacters = [
+      "Miner", "Princess", "Ice Wizard", "Lava Hound", "Graveyard", "Night Witch", "Sparky",
+      "Inferno Dragon",  "The Log", "Magic Archer", "Electro Wizard", "Bandit", "Royal Ghost",
+      "Ram Rider", "Fisherman", "Mother Witch", "Mega Knight",
+      "Phoenix", "Lumberjack", "Spirit Empress", "Goblin Machine", 
+    ];
+
+    let deck = [];
+
+    function addToDeck() {
+      if (deck.length >= 8) {
+        alert("Deck is full! Max 8 cards.");
+        return;
+      }
+
+      const rarity = document.getElementById("raritySelect").value;
+      let pool = [];
+
+      if (rarity === "common") {
+        pool = commonCharacters;
+      } else if (rarity === "rare") {
+        pool = rareCharacters;
+      } else if (rarity === "epic") {
+        pool = epicCharacters;
+      } 
+      else if (rarity === "legendary") {
+        pool = legendaryCharacters;
+      }
+      else {
+        pool = [...commonCharacters, ...rareCharacters, ...epicCharacters];
+      }
+
+      const available = pool.filter(card => !deck.includes(card));
+
+      if (available.length === 0) {
+        alert("No more unique cards available in this category.");
+        return;
+      }
+
+      const random = available[Math.floor(Math.random() * available.length)];
+      deck.push(random);
+      updateDeckDisplay();
+    }
+
+    function clearDeck() {
+      deck = [];
+      updateDeckDisplay();
+    }
+
+    function updateDeckDisplay() {
+      const deckDisplay = document.getElementById("deckDisplay");
+      deckDisplay.innerHTML = "";
+
+      deck.forEach(card => {
+        const box = document.createElement("div");
+        box.className = "card-box";
+
+        const img = document.createElement("img");
+        const safeName = card.replace(/ /g, "_");
+        img.src = `static/images/${safeName}.jpg`;
+        img.alt = card;
+
+        const label = document.createElement("div");
+        label.textContent = card;
+        label.style.marginTop = "8px";
+
+        box.appendChild(img);
+        box.appendChild(label);
+        deckDisplay.appendChild(box);
+      });
+    }
+  </script>
+
+</body>
+</html>
