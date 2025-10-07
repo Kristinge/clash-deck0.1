@@ -6,14 +6,15 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      color: #333;
+      background: url('images/clash_background1.jpg');
+      background-size: cover;
+      color: #fff;
       text-align: center;
       padding: 40px;
     }
 
     h1, h2 {
-      color: #2c3e50;
+      color: #ffffff;
     }
 
     select, button {
@@ -47,6 +48,7 @@
       text-align: center;
       font-weight: bold;
       transition: transform 0.2s;
+      position: relative;
     }
 
     .card-box:hover {
@@ -57,11 +59,47 @@
       width: 100px;
       border-radius: 8px;
     }
+
+    .elixir-badge {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      width: 30px;
+      height: 30px;
+      background-image: url(images/elixir_icon.jpg);
+      background-size: cover;
+      background-position: center;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      box-shadow: 0 0 4px rgba(0,0,0,0.3);
+      z-index: 2;
+    }
+
+    #avargeCostBox {
+      margin-top: 30px;
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .elixir-icon {
+      width: 32px;
+      height: 32px;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🃏 Clash Royale Deck Builder</h1>
+  <h1> Clash Royale Deck Builder</h1>
 
   <h2>Choose Rarity and Add Cards</h2>
   <label for="raritySelect">Rarity:</label>
@@ -78,11 +116,16 @@
 
   <div id="deckDisplay"></div>
 
+  <div id="avargeCostBox">
+    <img src="images/elixir_icon.jpg" alt="Elixir" class="elicir-icon">
+    <span id="averageCostText"> 0.0</span>
+  </div>
+
   <script>
     const commonCharacters = [
-      "Skeletons", "Knight", "Archers", "Bomber", "Goblins", "Spear Goblins", "Ice Spirit", "Fire Spirits",
+      "Skeletons", "Knight", "Archers", "Bomber", "Goblins", "Spear Goblins", "Ice Spirit", "Fire Spirit",
       "Electro Spirit", "Bats", "Minions", "Minion Horde", "Cannon", "Tesla", "Mortar", "Zap", "Arrows",
-      "Barbarians", "Royal Delivery", "Skeleton Dragons", "Royal Recruits", "Royal Giant", "Berserker",
+      "Barbarians", "Royal Delivery", "Skeleton Dragons", "Royal Recruits", "Royal Giant", "Berserkers",
       "Skeleton Barrel", "Goblin Gang", "Elite Barbarians", "Firecracker", "Rascals", "Giant Snowball"
     ];
 
@@ -109,71 +152,110 @@
       "Phoenix", "Lumberjack", "Spirit Empress", "Goblin Machine", 
     ];
 
-    let deck = [];
+    const elixirCosts = {"Skeletons": 1, "Knight":3, "Archers": 3, "Bomber": 2, "Goblins": 2, "Spear Goblins": 2, "Ice Spirit": 1, "Fire Spirit": 1,
+      "Electro Spirit": 1, "Bats": 2, "Minions": 3, "Minion Horde": 5, "Cannon": 3, "Tesla": 4, "Mortar": 4, "Zap": 2, "Arrows": 3,
+      "Barbarians": 5, "Royal Delivery": 3, "Skeleton Dragons": 4, "Royal Recruits": 7, "Royal Giant": 6, "Berserkers": 2,
+      "Skeleton Barrel": 3, "Goblin Gang": 3, "Elite Barbarians": 6, "Firecracker": 3, "Rascals": 5,"Giant Snowball": 2, "Mini P.E.K.K.A": 4, "Valkyrie": 4, "Musketeer": 4, "Giant":5,
+      "Mega Minion": 3, "Battle Ram": 4, "Wizard": 5, "Flying Machine": 4,
+      "Hog Rider": 4, "Royal Hogs": 5, "Three Musketeers": 9, "Battle Healer": 4, "Ice Golem": 2, "Dart Goblin": 3, "Furnace": 4,
+      "Zappies": 4, "Goblin Demolisher": 4, "Heal Spirit": 1, "Suspicious Bush": 2, "Elixir Golem": 3, "Fireball":4, "Rocket": 6,
+      "Earthquake": 3, "Goblin Cage": 4, "Goblin Hut": 4, "Tombstone": 3, "Bomb Tower": 4, "Inferno Tower": 5, "Barbarian Hut": 6,
+      "Elixir Collector": 6, "Baby Dragon": 4, "Prince": 5, "Dark Prince": 4, "Witch": 5, "Golem": 8, "Bowler":5, "Skeleton Army": 3,
+      "Tornado": 3, "Poison": 4, "Goblin Giant": 6, "Electro Dragon": 5, "Executioner": 5,
+      "Cannon Cart": 5, "Guards": 3, "P.E.K.K.A": 7, "Balloon": 5, "Giant Skeleton": 6, "Rune Giant": 4,
+      "Hunter":4 , "Wall Breakers": 2, "Electro Giant": 7, "Goblin Barrel": 3, "Vines": 3, "Lightning": 6, "Freeze": 4, "Barbarian Barrel": 2, "Goblin Curse": 2, "Rage": 2, 
+      "Clone": 3, "Mirror": 0, "Void": 3, "x-Bow": 6, "Goblin Drill": 4, "Miner": 3, "Princess": 3, "Ice Wizard": 3, "Lava Hound": 7, "Graveyard": 5, "Night Witch": 4, "Sparky": 6,
+      "Inferno Dragon": 4,  "The Log": 2, "Magic Archer": 4, "Electro Wizard": 4 , "Bandit": 3, "Royal Ghost": 3,
+      "Ram Rider": 5, "Fisherman": 3, "Mother Witch": 4, "Mega Knight": 7,
+      "Phoenix": 4, "Lumberjack": 4, "Spirit Empress": 6, "Goblin Machine": 5   }
 
-    function addToDeck() {
-      if (deck.length >= 8) {
-        alert("Deck is full! Max 8 cards.");
-        return;
-      }
+let deck = [];
 
-      const rarity = document.getElementById("raritySelect").value;
-      let pool = [];
+function addToDeck() {
+  const rarity = document.getElementById("raritySelect").value;
+  let pool = [];
 
-      if (rarity === "common") {
-        pool = commonCharacters;
-      } else if (rarity === "rare") {
-        pool = rareCharacters;
-      } else if (rarity === "epic") {
-        pool = epicCharacters;
-      } 
-      else if (rarity === "legendary") {
-        pool = legendaryCharacters;
-      }
-      else {
-        pool = [...commonCharacters, ...rareCharacters, ...epicCharacters];
-      }
+  if (rarity === "common") pool = commonCharacters;
+  else if (rarity === "rare") pool = rareCharacters;
+  else if (rarity === "epic") pool = epicCharacters;
+  else if (rarity === "legendary") pool = legendaryCharacters;
+  else pool = [...commonCharacters, ...rareCharacters, ...epicCharacters, ...legendaryCharacters];
 
-      const available = pool.filter(card => !deck.includes(card));
+  const available = pool.filter(card => !deck.includes(card));
+  const spaceLeft = 8 - deck.length;
 
-      if (available.length === 0) {
-        alert("No more unique cards available in this category.");
-        return;
-      }
+  if (spaceLeft <= 0) {
+    alert("Deck is full! Max 8 cards.");
+    return;
+  }
 
-      const random = available[Math.floor(Math.random() * available.length)];
-      deck.push(random);
-      updateDeckDisplay();
+  const cardsToAdd = rarity === "all" ? Math.min(spaceLeft, available.length) : 1;
+
+  for (let i = 0; i < cardsToAdd; i++) {
+    const freshPool = pool.filter(card => !deck.includes(card));
+    if (freshPool.length === 0) break;
+
+    const random = freshPool[Math.floor(Math.random() * freshPool.length)];
+    deck.push(random);
+  }
+
+  updateDeckDisplay();
+}
+
+function clearDeck() {
+  deck = [];
+  updateDeckDisplay();
+}
+
+function updateDeckDisplay() {
+  const deckDisplay = document.getElementById("deckDisplay");
+  deckDisplay.innerHTML = "";
+
+  deck.forEach(card => {
+    const box = document.createElement("div");
+    box.className = "card-box";
+
+    const img = document.createElement("img");
+    const safeName = card.replace(/ /g, "_");
+    img.src = `images/${safeName}.jpg`;
+    img.alt = card;
+
+    const label = document.createElement("div");
+    label.textContent = card;
+    label.style.marginTop = "8px";
+
+    const elixir = elixirCosts[card] ?? "?";
+    const elixirBadge = document.createElement("div");
+    elixirBadge.className = "elixir-badge";
+    elixirBadge.textContent = elixir;
+
+    box.appendChild(elixirBadge);
+    box.appendChild(img);
+    box.appendChild(label);
+    deckDisplay.appendChild(box);
+  });
+
+  updateAverageCost();
+}
+
+function updateAverageCost() {
+  const costDisplay = document.getElementById("averageCostText");
+
+  if (deck.length === 0) {
+    costDisplay.textContent = "0.0";
+    return;
+  }
+
+  let total = 0;
+  deck.forEach(card => {
+    const cost = elixirCosts[card];
+    if (typeof cost === "number") {
+      total += cost;
     }
+  });
 
-    function clearDeck() {
-      deck = [];
-      updateDeckDisplay();
-    }
-
-    function updateDeckDisplay() {
-      const deckDisplay = document.getElementById("deckDisplay");
-      deckDisplay.innerHTML = "";
-
-      deck.forEach(card => {
-        const box = document.createElement("div");
-        box.className = "card-box";
-
-        const img = document.createElement("img");
-        const safeName = card.replace(/ /g, "_");
-        img.src = `images/${safeName}.jpg`;
-        img.alt = card;
-
-        const label = document.createElement("div");
-        label.textContent = card;
-        label.style.marginTop = "8px";
-
-        box.appendChild(img);
-        box.appendChild(label);
-        deckDisplay.appendChild(box);
-      });
-    }
+  const average = (total / deck.length).toFixed(1);
+  costDisplay.textContent = average;
+}
   </script>
-
 </body>
-</html>
