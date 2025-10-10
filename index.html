@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: url('static/images/clash_background1.jpg');
+      background: url('images/clash_background1.jpg');
       background-size: cover;
       color: #fff;
       text-align: center;
@@ -131,7 +131,7 @@
   <div id="deck"></div>
 
   <div id="avargeCostBox">
-    <img src="static/images/elixir_icon.jpg" alt="Elixir" class="elixir-icon">
+    <img src="images/elixir_icon.jpg" alt="Elixir" class="elixir-icon">
     <span id="averageCostText"> 0.0</span>
   </div>
 
@@ -265,7 +265,7 @@
 
         const img = document.createElement("img");
         const safeName = card.replace(/ /g, "_");
-        img.src = `static/images/${safeName}.jpg`;
+        img.src = `images/${safeName}.jpg`;
         img.alt = card;
 
         const label = document.createElement("div");
