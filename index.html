@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: url('images/clash_background1.jpg');
+      background: url('static/images/clash_background1.jpg');
       background-size: cover;
       color: #fff;
       text-align: center;
@@ -26,7 +26,7 @@
       cursor: pointer;
     }
 
-    #deckDisplay {
+    #deck {
       margin-top: 20px;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -35,7 +35,6 @@
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
-     
     }
 
     .card-box {
@@ -66,7 +65,7 @@
       left: 6px;
       width: 30px;
       height: 30px;
-      background-image: url(images/elixir_icon.jpg);
+      background-image: url(static/images/elixir_icon.jpg);
       background-size: cover;
       background-position: center;
       color: white;
@@ -102,22 +101,37 @@
   <h1> Clash Royale Deck Builder</h1>
 
   <h2>Choose Rarity and Add Cards</h2>
-  <label for="raritySelect">Rarity:</label>
-  <select id="raritySelect">
+  <label for="filterSelect">Filter:</label>
+  <select id="filterSelect">
     <option value="all">All</option>
     <option value="common">Common</option>
     <option value="rare">Rare</option>
     <option value="epic">Epic</option>
     <option value="legendary">Legendary</option>
+    <option value="0">Arena 0 </option>
+    <option value="1">Arena 1 </option>
+    <option value="2">Arena 2 </option>
+    <option value="3">Arena 3 </option>
+    <option value="4">Arena 4 </option>
+    <option value="5">Arena 5 </option>
+    <option value="6">Arena 6 </option>
+    <option value="7">Arena 7 </option>
+    <option value="8">Arena 8 </option>
+    <option value="9">Arena 9 </option>
+    <option value="10">Arena 10 </option>
+    <option value="11">Arena 11 </option>
+    <option value="12">Arena 12 </option>
+    <option value="13">Arena 13 </option>
+    <option value="14">Arena 14 </option>
+    <option value="15">Arena 15 </option>
   </select>
-
-  <button onclick="addToDeck()">Add Random Character</button>
+  <button onclick="addToDeck()">Add Cards</button>
   <button onclick="clearDeck()">Clear Deck</button>
 
-  <div id="deckDisplay"></div>
+  <div id="deck"></div>
 
   <div id="avargeCostBox">
-    <img src="images/elixir_icon.jpg" alt="Elixir" class="elicir-icon">
+    <img src="static/images/elixir_icon.jpg" alt="Elixir" class="elixir-icon">
     <span id="averageCostText"> 0.0</span>
   </div>
 
@@ -130,7 +144,7 @@
     ];
 
     const rareCharacters = [
-      "Mini P.E.K.K.A", "Valkyrie", "Musketeer", "Giant", "Mega Minion", "Battle Ram", "Wizard", "Flying Machine",
+         "Mini P.E.K.K.A", "Valkyrie", "Musketeer", "Giant", "Mega Minion", "Battle Ram", "Wizard", "Flying Machine",
       "Hog Rider", "Royal Hogs", "Three Musketeers", "Battle Healer", "Ice Golem", "Dart Goblin", "Furnace",
       "Zappies", "Goblin Demolisher", "Heal Spirit", "Suspicious Bush", "Elixir Golem", "Fireball", "Rocket",
       "Earthquake", "Goblin Cage", "Goblin Hut", "Tombstone", "Bomb Tower", "Inferno Tower", "Barbarian Hut",
@@ -146,13 +160,14 @@
     ];
 
     const legendaryCharacters = [
-      "Miner", "Princess", "Ice Wizard", "Lava Hound", "Graveyard", "Night Witch", "Sparky",
+     "Miner", "Princess", "Ice Wizard", "Lava Hound", "Graveyard", "Night Witch", "Sparky",
       "Inferno Dragon",  "The Log", "Magic Archer", "Electro Wizard", "Bandit", "Royal Ghost",
       "Ram Rider", "Fisherman", "Mother Witch", "Mega Knight",
       "Phoenix", "Lumberjack", "Spirit Empress", "Goblin Machine", 
     ];
 
-    const elixirCosts = {"Skeletons": 1, "Knight":3, "Archers": 3, "Bomber": 2, "Goblins": 2, "Spear Goblins": 2, "Ice Spirit": 1, "Fire Spirit": 1,
+    const elixirCosts = {
+      "Skeletons": 1, "Knight":3, "Archers": 3, "Bomber": 2, "Goblins": 2, "Spear Goblins": 2, "Ice Spirit": 1, "Fire Spirit": 1,
       "Electro Spirit": 1, "Bats": 2, "Minions": 3, "Minion Horde": 5, "Cannon": 3, "Tesla": 4, "Mortar": 4, "Zap": 2, "Arrows": 3,
       "Barbarians": 5, "Royal Delivery": 3, "Skeleton Dragons": 4, "Royal Recruits": 7, "Royal Giant": 6, "Berserker": 2,
       "Skeleton Barrel": 3, "Goblin Gang": 3, "Elite Barbarians": 6, "Firecracker": 3, "Rascals": 5,"Giant Snowball": 2, "Mini P.E.K.K.A": 4, "Valkyrie": 4, "Musketeer": 4, "Giant":5,
@@ -167,95 +182,132 @@
       "Clone": 3, "Mirrors": 0, "Void": 3, "X Bow": 6, "Goblin Drill": 4, "Miner": 3, "Princess": 3, "Ice Wizard": 3, "Lava Hound": 7, "Graveyard": 5, "Night Witch": 4, "Sparky": 6,
       "Inferno Dragon": 4,  "The Log": 2, "Magic Archer": 4, "Electro Wizard": 4 , "Bandit": 3, "Royal Ghost": 3,
       "Ram Rider": 5, "Fisherman": 3, "Mother Witch": 4, "Mega Knight": 7,
-      "Phoenix": 4, "Lumberjack": 4, "Spirit Empress": 6, "Goblin Machine": 5   }
+      "Phoenix": 4, "Lumberjack": 4, "Spirit Empress": 6, "Goblin Machine": 5 
+    };
 
-let deck = [];
+    const arenaLevels = {
+      "Training Camp":[ "Arrows", "Knight", "Archers", "Minions", "Fireball", "Giant", "Musketeer", "Mini P.E.K.K.A"],
+      "Arena 1":["Goblins", "Spear Goblins", "Goblin Cage", "Goblin Hut"],
+      "Arena 2": ["Bomber", "Skeletons",  "Valkyrie", "Tombstone"],
+      "Arena 3": ["Barbarians", "Cannon", "Mega Minion", "Battle Ram" ],
+      "Arena 4": ["Electro Spirit", "Skeleton Dragons", "Fire Spirit", "Bomb Tower", "Inferno Tower", "Wizard"],
+      "Arena 5": ["Zap", "Mortar", "Bats", "Rocket", "Flying Machine", "Hog Rider"],
+      "Arena 6": ["Witch", "Goblin Barrel", "Guards", "Baby Dragon", "Skeleton Army", "P.E.K.K.A"],
+      "Arena 7": ["Royal Recruits", "Dark Prince", "Three Musketeers", "Royal Giant", "Royal Hogs", "Prince", "Baloon"],
+      "Arena 8": ["Giant Snowball", "Ice Golem", "Ice Spirit", "Battle Healer", "Vines", "Lightning", "Freeze", "Giant Skeleton"],
+      "Arena 9": ["Berserker", "Dart Goblin", "Skeleton Barrel", "Goblin Gang", "Barbarian Hut", "Barbarian Barrel", "Poison", "Rune Giant", "Goblin Giant"],
+      "Arena 10": ["Tesla", "Zappies", "Elite Barbarians", "Minion Horde", "Furnace", "X Bow", "Hunter", "Golem"],
+      "Arena 11": ["The Log", "Electro Wizard", "Mega Knight", "Ram Rider", "Miner", "Inferno Dragon", "Princess" , "Sparky"],
+      "Arena 12": ["Firecracker", "Eaerthquake", "Goblin Demolisher", "Electro Dragon", "Wall Breakers", "Graveyard", "Phoenix", "Royal Ghost", "Ice Wizard"],
+      "Arena 13": ["Rascals", "Bandit", "Heal Spirit", "Suspicious Bush", "Electro Giant", "Bowler", "Magic Archer", "Lava Hound"],
+      "Arena 14": ["Royal Delivery", "Elexir Golem", "Goblin Curse", "Rage", "Goblin Drill", "Executioner", "Night Witch", "Lumberjack"],
+      "Arena 15": ["Mother Witch", "Spirit Empress", "Fisherman", "Elixir Collector", "Void", "Clone", "Mirror", "Tornado", "Cannon Cart", "Goblin Machine"],
+    };
 
-function addToDeck() {
-  const rarity = document.getElementById("raritySelect").value;
-  let pool = [];
+    let deck = [];
 
-  if (rarity === "common") pool = commonCharacters;
-  else if (rarity === "rare") pool = rareCharacters;
-  else if (rarity === "epic") pool = epicCharacters;
-  else if (rarity === "legendary") pool = legendaryCharacters;
-  else pool = [...commonCharacters, ...rareCharacters, ...epicCharacters, ...legendaryCharacters];
+    const cardRarities = {};
+    commonCharacters.forEach(card => cardRarities[card] = "Common");
+    rareCharacters.forEach(card => cardRarities[card] = "Rare");
+    epicCharacters.forEach(card => cardRarities[card] = "Epic");
+    legendaryCharacters.forEach(card => cardRarities[card] = "Legendary");
 
-  const available = pool.filter(card => !deck.includes(card));
-  const spaceLeft = 8 - deck.length;
+    // Flatten arenaLevels into card → arena number
+    const cardArenaMap = {};
+    Object.entries(arenaLevels).forEach(([arenaName, cards], index) => {
+      cards.forEach(card => cardArenaMap[card] = index);
+    });
 
-  if (spaceLeft <= 0) {
-    alert("Deck is full! Max 8 cards.");
-    return;
-  }
+    function addToDeck() {
+      const filter = document.getElementById("filterSelect").value;
+      let pool = [];
 
-  const cardsToAdd = rarity === "all" ? Math.min(spaceLeft, available.length) : 1;
+      const allCards = Object.keys(cardRarities);
 
-  for (let i = 0; i < cardsToAdd; i++) {
-    const freshPool = pool.filter(card => !deck.includes(card));
-    if (freshPool.length === 0) break;
+      if (filter === "all") {
+        pool = allCards;
+      } else if (["common", "rare", "epic", "legendary"].includes(filter)) {
+        const rarity = filter.charAt(0).toUpperCase() + filter.slice(1);
+        pool = allCards.filter(card => cardRarities[card] === rarity);
+      } else {
+        const arenaNumber = parseInt(filter);
+        if (!isNaN(arenaNumber)) {
+          pool = allCards.filter(card => cardArenaMap[card] !== undefined && cardArenaMap[card] <= arenaNumber);
+        }
+      }
 
-    const random = freshPool[Math.floor(Math.random() * freshPool.length)];
-    deck.push(random);
-  }
+      const available = pool.filter(card => !deck.includes(card));
+      const spaceLeft = 8 - deck.length;
+      const cardsToAdd = Math.min(spaceLeft, available.length);
 
-  updateDeckDisplay();
-}
+      for (let i = 0; i < cardsToAdd; i++) {
+        const freshPool = available.filter(card => !deck.includes(card));
+        if (freshPool.length === 0) break;
+        const randomCard = freshPool[Math.floor(Math.random() * freshPool.length)];
+        deck.push(randomCard);
+      }
 
-function clearDeck() {
-  deck = [];
-  updateDeckDisplay();
-}
-
-function updateDeckDisplay() {
-  const deckDisplay = document.getElementById("deckDisplay");
-  deckDisplay.innerHTML = "";
-
-  deck.forEach(card => {
-    const box = document.createElement("div");
-    box.className = "card-box";
-
-    const img = document.createElement("img");
-    const safeName = card.replace(/ /g, "_");
-    img.src = `images/${safeName}.jpg`;
-    img.alt = card;
-
-    const label = document.createElement("div");
-    label.textContent = card;
-    label.style.marginTop = "8px";
-
-    const elixir = elixirCosts[card] ?? "?";
-    const elixirBadge = document.createElement("div");
-    elixirBadge.className = "elixir-badge";
-    elixirBadge.textContent = elixir;
-
-    box.appendChild(elixirBadge);
-    box.appendChild(img);
-    box.appendChild(label);
-    deckDisplay.appendChild(box);
-  });
-
-  updateAverageCost();
-}
-
-function updateAverageCost() {
-  const costDisplay = document.getElementById("averageCostText");
-
-  if (deck.length === 0) {
-    costDisplay.textContent = "0.0";
-    return;
-  }
-
-  let total = 0;
-  deck.forEach(card => {
-    const cost = elixirCosts[card];
-    if (typeof cost === "number") {
-      total += cost;
+      updateDeckDisplay();
     }
-  });
 
-  const average = (total / deck.length).toFixed(1);
-  costDisplay.textContent = average;
-}
+    function clearDeck() {
+      deck = [];
+      updateDeckDisplay();
+    }
+
+    function updateDeckDisplay() {
+      const deckDisplay = document.getElementById("deck");
+      deckDisplay.innerHTML = "";
+
+      deck.forEach(card => {
+        const box = document.createElement("div");
+        box.className = "card-box";
+
+        const img = document.createElement("img");
+        const safeName = card.replace(/ /g, "_");
+        img.src = `static/images/${safeName}.jpg`;
+        img.alt = card;
+
+        const label = document.createElement("div");
+        label.textContent = card;
+        label.style.marginTop = "8px";
+
+        const elixir = elixirCosts[card] ?? "?";
+        const elixirBadge = document.createElement("div");
+        elixirBadge.className = "elixir-badge";
+        elixirBadge.textContent = elixir;
+
+        box.appendChild(elixirBadge);
+        box.appendChild(img);
+        box.appendChild(label);
+        deckDisplay.appendChild(box);
+      });
+
+      updateAverageCost();
+    }
+
+    function updateAverageCost() {
+      const costDisplay = document.getElementById("averageCostText");
+
+      if (deck.length === 0) {
+        costDisplay.textContent = "0.0";
+        return;
+      }
+
+      let total = 0;
+      deck.forEach(card => {
+        const cost = elixirCosts[card];
+        if (typeof cost === "number") {
+          total += cost;
+        }
+      });
+
+      const average = (total / deck.length).toFixed(1);
+      costDisplay.textContent = average;
+    }
+
+    // Initialize display
+    updateDeckDisplay();
   </script>
 </body>
+</html>
